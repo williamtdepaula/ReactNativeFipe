@@ -1,25 +1,26 @@
 import React, { useEffect, useState } from 'react'
 import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
 import { Picker } from '@react-native-picker/picker'
+import ButtonText from '../button/ButtonText'
+import { DEFAULT_COLOR, DEFAULT_STYLES } from '../../utils/Constants'
 
-export default function PickerOption({ title = '', values, listenerToResetPicker = null, onSelect, enabled, loading }) {
+const SELECT_OPTION = { nome: 'Selecione', codigo: 0 }
+
+export default function PickerOption({ title = '', values, onSelect, enabled, loading, showTryAgainButton, onPressTryAgain, onPressSelectOption }) {
 
     const [options, setOptions] = useState([])
     const [optionSelected, setOptionSelected] = useState(null)
 
     useEffect(() => {
         const newOptions = [...values]
-        newOptions.unshift({ nome: 'Selecione', codigo: 0 })
+        newOptions.unshift(SELECT_OPTION)
         setOptions(newOptions)
     }, [values])
-
-    useEffect(() => {
-        if (listenerToResetPicker) setOptions(['Selecione'])
-    }, [listenerToResetPicker])
 
     function onSelectOption(option) {
         setOptionSelected(option)
         if (option != 0 && onSelect) onSelect(option)
+        else if(onPressSelectOption) onPressSelectOption()
 
     }
 
@@ -27,12 +28,17 @@ export default function PickerOption({ title = '', values, listenerToResetPicker
         return options.map(({ nome, codigo }, i) => <Picker.Item key={i} label={nome} value={codigo} />)
     }
 
+    function pickerIsEnabled(){
+        return enabled && values.length > 0
+    }
+
     return (
 
-        <View style={styles.containerPicker} >
+        <View style={[styles.containerPicker, {opacity: !pickerIsEnabled() ? 0.5 : 1}]} >
             <View style={styles.containerTitle}>
                 <Text style={styles.title} >{title}</Text>
-                {loading && <ActivityIndicator size="small" color='#98bbf5' />}
+                {loading && <ActivityIndicator size="small" color={DEFAULT_COLOR} />}
+                {(showTryAgainButton && !loading) && <ButtonText text='Tentar novamente' onPress={onPressTryAgain} />}
             </View>
 
             <View style={styles.picker}>
@@ -40,7 +46,7 @@ export default function PickerOption({ title = '', values, listenerToResetPicker
                     selectedValue={optionSelected}
                     mode='dropdown'
                     onValueChange={onSelectOption}
-                    enabled={enabled}
+                    enabled={pickerIsEnabled()}
                 >
                     {renderItemsPicker()}
                 </Picker>
@@ -57,6 +63,7 @@ const styles = StyleSheet.create({
     containerTitle: {
         flexDirection: 'row',
         marginBottom: 10,
+        alignItems: "center"
     },
     title: {
         fontWeight: 'bold',
@@ -66,6 +73,6 @@ const styles = StyleSheet.create({
     picker: {
         borderRadius: 10,
         borderWidth: 2,
-        borderColor: '#98bbf5',
+        borderColor: DEFAULT_COLOR,
     }
 })

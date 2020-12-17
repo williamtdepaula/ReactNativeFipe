@@ -1,8 +1,9 @@
-import { put, call } from 'redux-saga/effects'
+import { put, call, fork } from 'redux-saga/effects'
 import { getModels } from '../../utils/Network'
-import { setErrorModels, setLoadingModels, setModels } from '../actions/Model'
-import { setModel } from '../actions/Filter'
-import { getYearsExternal } from '../actions/Year'
+import { resetNextPickersAfterModel, setErrorModels, setLoadingModels, setModels } from '../actions/Model'
+import { setModel, setYear } from '../actions/Filter'
+import { getYearsExternal, setYears } from '../actions/Year'
+import { showDialogWarningRequest } from '../../utils/Dialog'
 
 
 function* asyncGetModels({ payload }) {
@@ -18,6 +19,7 @@ function* asyncGetModels({ payload }) {
         yield put(setErrorModels(false))
     } catch (e) {
         yield put(setErrorModels(true))
+        yield fork(showDialogWarningRequest)
     }
 
     yield put(setLoadingModels(false))
@@ -27,12 +29,24 @@ function* asyncGetModels({ payload }) {
 function* onSelectModel({ payload }) {
     const { model } = payload
 
+    //Reseta os valores do picker seguite
+    yield put(resetNextPickersAfterModel())   
+
     yield put(setModel(model))
 
     yield put(getYearsExternal(model))
+
+    yield put(setYear(0))
+}
+
+function* resetNextPickers() {
+    yield put(setYear(0))
+    
+    yield put(setYears([]))
 }
 
 export {
     asyncGetModels,
-    onSelectModel
+    onSelectModel,
+    resetNextPickers
 }

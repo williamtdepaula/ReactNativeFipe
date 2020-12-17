@@ -39,3 +39,9 @@ export const onSelectBrand = brand => {
         }
     }
 }
+
+export const resetNextPickersAfterBrand = () => {
+    return {
+        type: 'RESET_NEXT_PICKERS_AFTER_BRAND'
+    }
+}

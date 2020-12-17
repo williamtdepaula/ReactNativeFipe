@@ -2,7 +2,6 @@ const INITIAL_STATE = {
     brand: 0,
     model: 0,
     year: 0,
-    version: 0,
 }
 
 export default (state = INITIAL_STATE, action) => {
@@ -22,11 +21,6 @@ export default (state = INITIAL_STATE, action) => {
             return {
                 ...state,
                 year: action.payload.year,
-            }
-        case ('SET_VERSION'):
-            return {
-                ...state,
-                version: action.payload.version,
             }
         default:
             return state

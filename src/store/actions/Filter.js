@@ -24,12 +24,3 @@ export const setYear = year => {
         }
     }
 }
-
-export const setVersion = version => {
-    return {
-        type: 'SET_VERSION',
-        payload: {
-            version,
-        }
-    }
-}

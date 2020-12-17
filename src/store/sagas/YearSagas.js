@@ -1,4 +1,5 @@
-import { put, call, select } from 'redux-saga/effects'
+import { put, call, select, fork } from 'redux-saga/effects'
+import { showDialogWarningRequest } from '../../utils/Dialog'
 import { getYears } from '../../utils/Network'
 import { setErrorYears, setLoadingYears, setYears } from '../actions/Year'
 
@@ -23,6 +24,7 @@ function* asyncGetYears({ payload }) {
         yield put(setErrorYears(false))
     } catch (e) {
         yield put(setErrorYears(true))
+        yield fork(showDialogWarningRequest)
     }
 
     yield put(setLoadingYears(false))

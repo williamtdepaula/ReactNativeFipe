@@ -1,4 +1,5 @@
-import { put, call, select } from 'redux-saga/effects'
+import { put, call, select, fork } from 'redux-saga/effects'
+import { showDialogWarningRequest } from '../../utils/Dialog'
 import { getVehicle } from '../../utils/Network'
 import { setErrorVehicle, setLoadingVehicle, setVehicle } from '../actions/Vehicle'
 
@@ -19,6 +20,7 @@ function* asyncGetVehicle() {
 
     } catch (e) {
         yield put(setErrorVehicle(true))
+        yield fork(showDialogWarningRequest)
     }
 
     yield put(setLoadingVehicle(false))

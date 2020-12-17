@@ -42,3 +42,9 @@ export const onSelectModel = model => {
         }
     }
 }
+
+export const resetNextPickersAfterModel = () => {
+    return {
+        type: 'RESET_NEXT_PICKERS_AFTER_MODEL'
+    }
+}

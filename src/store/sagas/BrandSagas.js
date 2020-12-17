@@ -1,8 +1,10 @@
 import { put, call, select, delay, fork } from 'redux-saga/effects'
+import { showDialogWarningRequest } from '../../utils/Dialog'
 import { getBrands } from '../../utils/Network'
-import { setBrands, setErrorBrands, setLoadingBrands } from '../actions/Brand'
-import { setBrand } from '../actions/Filter'
-import { getModelsExternal } from '../actions/Model'
+import { resetNextPickersAfterBrand, setBrands, setErrorBrands, setLoadingBrands } from '../actions/Brand'
+import { setBrand, setModel, setYear } from '../actions/Filter'
+import { getModelsExternal, setModels } from '../actions/Model'
+import { setYears } from '../actions/Year'
 
 
 function* asyncGetBrands({ }) {
@@ -15,7 +17,8 @@ function* asyncGetBrands({ }) {
         yield put(setErrorBrands(false))
     } catch (e) {
         yield put(setErrorBrands(true))
-        console.tron.logImportant('response', e)
+
+        yield fork(showDialogWarningRequest)
     }
     yield put(setLoadingBrands(false))
 
@@ -24,12 +27,27 @@ function* asyncGetBrands({ }) {
 function* onSelectBrand({ payload }) {
     const { brand } = payload
 
+    //Reseta os valores dos pickers seguintes
+    yield put(resetNextPickersAfterBrand())
+
     yield put(setBrand(brand))
 
     yield put(getModelsExternal(brand))
+
+}
+
+function* resetNextPickers() {
+    yield put(setModel(0))
+
+    yield put(setYear(0))
+
+    yield put(setModels([]))
+
+    yield put(setYears([]))
 }
 
 export {
     asyncGetBrands,
-    onSelectBrand
+    onSelectBrand,
+    resetNextPickers
 }

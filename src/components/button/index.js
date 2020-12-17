@@ -1,17 +1,18 @@
 import React from 'react'
 import { View, Text, Pressable, StyleSheet, ActivityIndicator } from 'react-native'
+import { DEFAULT_COLOR } from '../../utils/Constants'
 
-export default function ButtonDefault({ onPress, text, loading }) {
+export default function ButtonDefault({ onPress, text, loading, disabled }) {
     return (
         <View style={styles.containerButton} >
             <Pressable
-                style={styles.btn}
+                style={[styles.btn, {opacity: disabled ? 0.5 : 1}]}
                 onPress={onPress}
                 android_ripple={{ borderless: false, radius: 5 }}
-                disabled={loading}
+                disabled={disabled}
             >
                 {loading
-                    ? <ActivityIndicator size="small" color='#98bbf5' />
+                    ? <ActivityIndicator size="small" color='#fff' />
                     : <Text style={styles.text}>{text}</Text>
                 }
             </Pressable>
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
         width: '70%',
         justifyContent: "center",
         alignItems: 'center',
-        backgroundColor: '#6b98e3',
+        backgroundColor: DEFAULT_COLOR,
         padding: 20,
         borderRadius: 10,
         elevation: 5,
